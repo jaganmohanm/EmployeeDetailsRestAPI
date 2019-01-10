@@ -1,4 +1,4 @@
-package com.candidjava.spring.controller;
+ppackage com.candidjava.spring.controller;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ import com.candidjava.spring.service.EmployeeService;
 public class EmployeeController {
 	@Autowired
 	EmployeeService empService;
-	Employee emp;
+	Employee employee;
 	Response resp;
 	private long id;
 
@@ -51,82 +51,82 @@ public class EmployeeController {
 
 	@GetMapping(value = "/getEmployeeById/{id}", headers = "Accept=application/json", produces = "application/json")
 	public Employee getEmployeeById(@PathVariable("id") long id) {
-		Employee emp = empService.findEmployeeById(id);
-		return emp;
+		Employee employee = empService.findEmployeeById(id);
+		return employee;
 	}
 
 	@PostMapping(value = "/insertEmployee", headers = "Accept=application/json", produces = "application/json")
-	public ResponseEntity createUser(@RequestBody Employee emp, UriComponentsBuilder ucBuilder) {
-		Response resp = new Response();
+	public ResponseEntity createUser(@RequestBody Employee employee, UriComponentsBuilder ucBuilder) {
+		Response response = new Response();
 		try {
-			if (StringUtils.isEmpty(emp.getCountry()) || StringUtils.isEmpty(emp.getName())) {
+			if (StringUtils.isEmpty(employee.getCountry()) || StringUtils.isEmpty(employee.getName())) {
 				throw new UserException("Insertion not possible without values", "Failure");
 			}
 		} catch (UserException us) {
-			resp.setMessage(us.getMessage());
-			resp.setStatus(us.getStatus());
-			return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
+			response.setMessage(us.getMessage());
+			response.setStatus(us.getStatus());
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
-		empService.saveEmployee(emp);
+		empService.saveEmployee(employee);
 		HttpHeaders headers = new HttpHeaders();
-		headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(emp.getId()).toUri());
+		headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(employee.getId()).toUri());
 		resp.setMessage("Insertion successfull for Employee");
 		resp.setStatus("successfull");
-		return new ResponseEntity<>(resp, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 
 	@DeleteMapping(value = "/deleteEmployee/{id}", headers = "Accept=application/json", produces = "application/json")
 	public ResponseEntity deleteEmployee(@PathVariable("id") long id) throws UserException {
-		Employee user = empService.findEmployeeById(id);
-		Response resp = new Response();
+		Employee employee = empService.findEmployeeById(id);
+		Response response = new Response();
 
-		if (StringUtils.isEmpty(user)) {
-			resp.setMessage("Deletion is not possible with inappropriate ID");
-			resp.setStatus("Failure");
-			return new ResponseEntity<>(resp, HttpStatus.NOT_FOUND);
+		if (StringUtils.isEmpty(employee)) {
+			response.setMessage("Deletion is not possible with inappropriate ID");
+			response.setStatus("Failure");
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
 			empService.deleteEmployeeById(id);
-		} catch (UserException u) {
-			resp.setMessage(u.getMessage());
-			resp.setStatus(u.getStatus());
-			return new ResponseEntity<>(resp, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (UserException ux) {
+			response.setMessage(ux.getMessage());
+			response.setStatus(ux.getStatus());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		resp.setMessage("Deletion successfull for Employee");
-		resp.setStatus("success");
-		return new ResponseEntity<>(resp, HttpStatus.OK);
+		response.setMessage("Deletion successfull for Employee");
+		response.setStatus("success");
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 
 	@PutMapping(value = "/updateEmployee/{id}", headers = "Accept=application/json", produces = "application/json")
-	public ResponseEntity updateEmployee(@PathVariable("id") long id, @RequestBody Employee u) {
-		Response resp = new Response();
-		Employee emp = empService.findEmployeeById(id);
-		if (emp == null) {
-			resp.setMessage("Updation cannot be done");
-			resp.setStatus("Failure");
-			return new ResponseEntity<>(resp, HttpStatus.NOT_FOUND);
+	public ResponseEntity updateEmployee(@PathVariable("id") long id, @RequestBody Employee emp) {
+		Response response = new Response();
+		Employee employee = empService.findEmployeeById(id);
+		if (employee == null) {
+			response.setMessage("Updation cannot be done");
+			response.setStatus("Failure");
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 
 		}
 
 		try {
-			emp.setName(u.getName());
-			emp.setCountry(u.getCountry());
-			if (StringUtils.isEmpty(u.getName()) || StringUtils.isEmpty(u.getCountry())) {
+			employee.setName(employee.getName());
+			employee.setCountry(employee.getCountry());
+			if (StringUtils.isEmpty(employee.getName()) || StringUtils.isEmpty(employee.getCountry())) {
 				throw new UserException("Updation not possible because values are empty", "Failure");
 			}
-		} catch (UserException us) {
-			resp.setMessage(us.getMessage());
-			resp.setStatus(us.getStatus());
-			return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
+		} catch (UserException ux) {
+			response.setMessage(ux.getMessage());
+			response.setStatus(ux.getStatus());
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
-		Employee c = empService.updateEmployeeDetails(emp, id);
-		resp.setMessage("Updation successfull for Employee");
-		resp.setStatus("successfull");
-		return new ResponseEntity<>(resp, HttpStatus.OK);
+		Employee employe = empService.updateEmployeeDetails(emp, id);
+		response.setMessage("Updation successfull for Employee");
+		response.setStatus("successfull");
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }
